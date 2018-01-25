@@ -1,0 +1,109 @@
+import torch
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.nn.parallel
+import torch.backends.cudnn as cudnn
+import torch.distributed as dist
+import torch.optim as optim
+import torch.utils.data
+import torch.utils.data.distributed
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+import torchvision.models as models
+import torchvision.utils as vutils
+# import matplotlib.pyplot as plt
+import numpy as np
+from torch.autograd import Variable
+import datetime
+import argparse
+import os
+
+# Read input argument
+parser = argparse.ArgumentParser(description='dcgan')
+parser.add_argument('--dataset', default='lsun', 
+    help='choose the training data: {imagenet, lsun, mnist(not in the server)}')
+parser.add_argument('--n', default=16, 
+    help='how much image you want to generate')
+parser.add_argument('--gpu', default=0,
+    help='which gpu you want to use')
+parser.add_argument('--interpolate', default=False, action='store_true',
+    help='whether use interpolation or use random number' )
+args = parser.parse_args()
+
+nz = 100
+ngf = 128
+ndf = 128
+nc = 3
+k_size = 4
+img_size = 64
+out_size = int(args.n)
+
+def create_random(n_size):
+    t = torch.FloatTensor(n_size, nz, 1, 1).normal_(0, 1)
+    return t.cuda()
+
+def create_interpolation(n_size):
+    maxmin = np.random.rand(100,2)
+    maxmin *= 6
+    maxmin -= 3
+
+    noise = []
+    for i in maxmin:
+        linear = np.linspace(i[0],i[1],n_size)
+        noise += [linear.tolist()]
+    noise = np.array(noise).astype('float32')
+    noise = noise.T
+    int_noise = torch.from_numpy(noise)
+    int_noise = int_noise.unsqueeze(2)
+    int_noise = int_noise.unsqueeze(3)
+    return int_noise
+
+# Generator Model
+class G_layer(nn.Module):
+    def __init__(self):
+        super(G_layer, self).__init__()
+        self.main = nn.Sequential(
+            # input is Z, going into a convolution
+            # nn.ConvTranspose2d(input_dim, output_dim, kernel_size, stride, padding)
+            nn.ConvTranspose2d(nz, ngf * 8, k_size, 1, 0, bias=False), 
+            nn.BatchNorm2d(ngf * 8),
+            nn.ReLU(True),
+            # state size. (ngf*8) x 4 x 4
+            nn.ConvTranspose2d(ngf * 8, ngf * 4, k_size, 2, 1, bias=False),
+            nn.BatchNorm2d(ngf * 4),
+            nn.ReLU(True),
+            # state size. (ngf*4) x 8 x 8
+            nn.ConvTranspose2d(ngf * 4, ngf * 2, k_size, 2, 1, bias=False),
+            nn.BatchNorm2d(ngf * 2),
+            nn.ReLU(True),
+            # state size. (ngf*2) x 16 x 16
+            nn.ConvTranspose2d(ngf * 2, ngf, k_size, 2, 1, bias=False),
+            nn.BatchNorm2d(ngf),
+            nn.ReLU(True),
+            # state size. (ngf) x 32 x 32
+            nn.ConvTranspose2d(ngf, nc, k_size, 2, 1, bias=False),
+            nn.Tanh()
+            # state size. (nc) x 64 x 64
+        )
+
+    def forward(self, input):
+        out = self.main(input)
+        return out
+
+netG = G_layer()
+netG.cuda()
+netG.load_state_dict(torch.load("trained_model/netG_lsun.pth", map_location=lambda storage, loc: storage))
+netG.eval()
+
+if not args.interpolate:
+    z = create_random(out_size)
+    z = Variable(z).cuda()    
+else:
+    z = create_interpolation(out_size)
+    sample = z.squeeze(3)
+    sample = sample.squeeze(2)
+    z = Variable(z).cuda()
+
+fake = netG(z)
+vutils.save_image(fake.data, 'test_generate.png', nrow=4, normalize=True)
