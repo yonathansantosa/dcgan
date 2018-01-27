@@ -306,10 +306,11 @@ def train(args, param, train_loader):
     # Training
     optimizerG = optim.Adam(netG.parameters(), lr=lr_g, betas=(beta_g, 0.999))
     optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta_d, 0.999))
-    netG.eval()
-    fake = netG(fixed_noise)
-    vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, -1), nrow=2, normalize=True)
-    netG.train()
+    if start_epoch == 0:
+        netG.eval()
+        fake = netG(fixed_noise)
+        vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, -1), nrow=2, normalize=True)
+        netG.train()
     start_epoch = int(args.cont)
     for epoch in range(start_epoch, max_epoch):
         for i, (x, y) in enumerate(train_loader, 0):
@@ -370,9 +371,9 @@ def train(args, param, train_loader):
                 torch.save(netD.state_dict(), '%s/netD_%s.pth' % ('trained_model', args.dataset))
 
                 netG.eval()
-                vutils.save_image(img_real.data, '%s/%s/real_samples.png' % ('result', args.dataset), nrow=2, normalize=True)
+                vutils.save_image(img_real.data, '%s/%s/real_samples.png' % ('result', args.dataset), nrow=8, normalize=True)
                 fake = netG(fixed_noise)
-                vutils.save_image(fake.data, '%s/%s/fake_samples_it_%05d.png' % ('result', args.dataset, i), nrow=2, normalize=True)
+                vutils.save_image(fake.data, '%s/%s/fake_samples_it_%05d.png' % ('result', args.dataset, i), nrow=8, normalize=True)
                 netG.train()
                 
             # Checking time for auto stop
@@ -382,7 +383,7 @@ def train(args, param, train_loader):
         
         netG.eval()
         fake = netG(fixed_noise)
-        vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, epoch), nrow=2, normalize=True)
+        vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, epoch), nrow=8, normalize=True)
         netG.train()
         
         # Checking time again for auto stop
