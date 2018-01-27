@@ -126,8 +126,8 @@ def load_data(args):
         kernel_d = [6,6,6,6,6]
         
     elif args.dataset == 'lsun':
-        # traindir = '/home/data/lsun/train'
-        traindir = '/media/yonathan/DOCUMENTS/lsun/lsun-master/'
+        traindir = '/home/data/lsun/train'
+        # traindir = '/media/yonathan/DOCUMENTS/lsun/lsun-master/'
         train_dataset = datasets.LSUN(traindir, classes=['church_outdoor_train'], 
             transform=transforms.Compose([
                 transforms.Resize(128),
