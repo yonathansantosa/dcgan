@@ -127,7 +127,6 @@ def load_data(args):
         max_epoch = int(args.epoch)
         lr_g = 0.0002
         lr_d = 0.0002
-        beta_g = 0.9
         beta_g = 0.5
         beta_d = 0.5
         kernel_g = [6,6,6,6,8]    
@@ -152,6 +151,7 @@ def load_data(args):
         max_epoch = int(args.epoch)        
         lr_g = 0.0002
         lr_d = 0.0002
+        beta_g = 0.5        
         beta_d = 0.5
         kernel_g = [6,6,6,6,8]
         kernel_d = [6,6,6,6,6]
