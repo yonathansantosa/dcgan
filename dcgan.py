@@ -25,6 +25,8 @@ parser.add_argument('--dataset', default='lsun',
     help='choose the training data: {imagenet, lsun, mnist(not in the server)}')
 parser.add_argument('--load', default=False, action='store_true', 
     help='load previousely trained model or not')
+parser.add_argument('--cont', default=0, 
+    help='continue from certain epoch')
 parser.add_argument('--nonstop', default=False, action='store_true', 
     help='training without time limit or not. You want to use this on the server')
 parser.add_argument('--sample', default=1, 
@@ -46,6 +48,9 @@ args = parser.parse_args()
 # Training time limit
 max_hour = 19
 max_minute = 58
+
+if args.cont != '0':
+    args.load = True
 
 '''
 Load data
@@ -305,7 +310,8 @@ def train(args, param, train_loader):
     fake = netG(fixed_noise)
     vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, -1), nrow=2, normalize=True)
     netG.train()
-    for epoch in range(max_epoch):
+    start_epoch = int(args.cont)
+    for epoch in range(start_epoch, max_epoch):
         for i, (x, y) in enumerate(train_loader, 0):
             # ==============
             # Forward
