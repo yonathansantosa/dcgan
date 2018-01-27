@@ -35,6 +35,12 @@ parser.add_argument('--batch', default=64,
     help='size of batch training')
 parser.add_argument('--gpu', default=0,
     help='which gpu you want to use')
+parser.add_argument('--epoch', default=100,
+    help='maximmum epoch training')
+parser.add_argument('--ngf', default=128,
+    help='maximmum epoch training')
+parser.add_argument('--ndf', default=128,
+    help='maximmum epoch training')
 args = parser.parse_args()
 
 # Training time limit
@@ -55,8 +61,8 @@ def load_data(args):
 
     '''
     nz = 100
-    ngf = 128
-    ndf = 128
+    ngf = int(args.ngf)
+    ndf = int(args.ndf)
     img_size = 64
 
     # Switch GPU automatically
@@ -117,8 +123,8 @@ def load_data(args):
         else: 
             it_save_image = int(args.save)
         nc = 1
-        batch_size = int(args.batch_size)
-        max_epoch = 200
+        batch_size = int(args.batch)
+        max_epoch = int(args.epoch)
         lr_g = 0.0002
         lr_d = 0.0002
         beta_g = 0.9
@@ -143,7 +149,7 @@ def load_data(args):
             it_save_image = int(args.save)
         nc = 3
         batch_size = int(args.batch)
-        max_epoch = 200        
+        max_epoch = int(args.epoch)        
         lr_g = 0.0002
         lr_d = 0.0002
         beta_d = 0.5
@@ -166,6 +172,7 @@ def load_data(args):
             it_save_image = int(args.save)
         nc = 3
         batch_size = int(args.batch)
+        max_epoch = int(args.epoch)                
         lr_g = 0.0002
         lr_d = 0.0002
         beta_g = 0.5
