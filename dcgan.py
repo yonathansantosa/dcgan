@@ -106,7 +106,8 @@ def load_data(args):
         else: 
             it_save_image = int(args.save)
         nc = 3
-        batch_size = 128
+        batch_size = int(args.batch)
+        max_epoch = int(args.epoch)
         lr_g = 0.0002
         lr_d = 0.0002
         beta_g = 0.5
