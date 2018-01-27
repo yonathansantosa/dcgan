@@ -27,10 +27,12 @@ parser.add_argument('--load', default=False, action='store_true',
     help='load previousely trained model or not')
 parser.add_argument('--nonstop', default=False, action='store_true', 
     help='training without time limit or not. You want to use this on the server')
-parser.add_argument('--sample', default=0.3, 
+parser.add_argument('--sample', default=1, 
     help='how much dataset you want to use')
 parser.add_argument('--save', default=-1, 
     help='how much iteration interval to save image')
+parser.add_argument('--batch', default=64, 
+    help='size of batch training')
 parser.add_argument('--gpu', default=0,
     help='which gpu you want to use')
 args = parser.parse_args()
@@ -115,7 +117,7 @@ def load_data(args):
         else: 
             it_save_image = int(args.save)
         nc = 1
-        batch_size = 64
+        batch_size = int(args.batch_size)
         max_epoch = 200
         lr_g = 0.0002
         lr_d = 0.0002
@@ -140,7 +142,7 @@ def load_data(args):
         else: 
             it_save_image = int(args.save)
         nc = 3
-        batch_size = 8
+        batch_size = int(args.batch)
         max_epoch = 200        
         lr_g = 0.0002
         lr_d = 0.0002
@@ -163,7 +165,7 @@ def load_data(args):
         else: 
             it_save_image = int(args.save)
         nc = 3
-        batch_size = 32
+        batch_size = int(args.batch)
         lr_g = 0.0002
         lr_d = 0.0002
         beta_g = 0.5
@@ -191,7 +193,7 @@ def load_data(args):
         nz, nc, ngf, ndf, 
         lr_g, lr_d, beta_g, beta_d, 
         kernel_g, kernel_d, 
-        it_save_image, batch_size, gpu_id)
+        it_save_image, batch_size, gpu_id, max_epoch)
     # =================================================
     #  Sanity Check
     #  showing input image
@@ -241,7 +243,7 @@ def train(args, param, train_loader):
     (nz, nc, ngf, ndf, 
         lr_g, lr_d, beta_g, beta_d, 
         kernel_g, kernel_d, 
-        it_save_image, batch_size, gpu_id) = param
+        it_save_image, batch_size, gpu_id, max_epoch) = param
     '''
     Defining generator model
     '''
@@ -296,7 +298,7 @@ def train(args, param, train_loader):
     fake = netG(interpolate)
     vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, -1), nrow=2, normalize=True)
     netG.train()
-    for epoch in range(100):
+    for epoch in range(max_epoch):
         for i, (x, y) in enumerate(train_loader, 0):
             # ==============
             # Forward
@@ -344,7 +346,7 @@ def train(args, param, train_loader):
             # =================
             # Printing and Saving
             # =================
-            print('[%d/%d][%d/%d] Loss_D: %.5f Loss_G: %.5f D(x): %.5f D(G(z)): %.4f / %.4f' % (epoch, 100, i, len(train_loader),
+            print('[%d/%d][%d/%d] Loss_D: %.5f Loss_G: %.5f D(x): %.5f D(G(z)): %.4f / %.4f' % (epoch, max_epoch, i, len(train_loader),
                 errD.data[0], errG.data[0], D_x, D_G_z1, D_G_z2))
             f.write(str(epoch)+','+str(i)+','+str(errD.data[0])+','+str(errG.data[0])+'\n')
             
