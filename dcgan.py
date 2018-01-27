@@ -302,7 +302,7 @@ def train(args, param, train_loader):
     optimizerG = optim.Adam(netG.parameters(), lr=lr_g, betas=(beta_g, 0.999))
     optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta_d, 0.999))
     netG.eval()
-    fake = netG(interpolate)
+    fake = netG(fixed_noise)
     vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, -1), nrow=2, normalize=True)
     netG.train()
     for epoch in range(max_epoch):
@@ -375,7 +375,7 @@ def train(args, param, train_loader):
                 break
         
         netG.eval()
-        fake = netG(interpolate)
+        fake = netG(fixed_noise)
         vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, epoch), nrow=2, normalize=True)
         netG.train()
         
