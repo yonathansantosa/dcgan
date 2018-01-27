@@ -49,7 +49,7 @@ args = parser.parse_args()
 max_hour = 19
 max_minute = 58
 
-if args.cont != '0':
+if int(args.cont) != 0:
     args.load = True
 
 '''
