@@ -118,8 +118,8 @@ def load_data(args):
         traindir = './MNIST_data'
         train_dataset = datasets.MNIST(traindir, train=True, download=True,
             transform=transforms.Compose([
-                transforms.Resize(128),
-                transforms.CenterCrop(128),
+                transforms.Resize(64),
+                transforms.CenterCrop(64),
                 transforms.ToTensor()
             ]))
         
