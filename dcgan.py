@@ -272,7 +272,7 @@ def train(args, param, train_loader):
     netD.cuda(gpu_id)
     # netD.apply(weights_init)
     if args.load:
-        netD.load_state_dict(torch.load("model/netD_"+args.dataset+".pth"))
+        netD.load_state_dict(torch.load("trained_model/netD_"+args.dataset+".pth"))
 
     criterion = nn.BCELoss()
 
