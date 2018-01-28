@@ -264,7 +264,10 @@ def train(args, param, train_loader):
     netG.cuda(gpu_id)
     # netG.apply(weights_init)
     if args.load:
-        netG.load_state_dict(torch.load("trained_model/netG_"+args.dataset+".pth"))
+        netG.load_state_dict(
+            torch.load("trained_model/netG_"+args.dataset+".pth", 
+            map_location=lambda storage, 
+            loc: storage))
 
     '''
     Defining discriminator model
@@ -273,7 +276,10 @@ def train(args, param, train_loader):
     netD.cuda(gpu_id)
     # netD.apply(weights_init)
     if args.load:
-        netD.load_state_dict(torch.load("trained_model/netD_"+args.dataset+".pth"))
+        netD.load_state_dict(
+            torch.load("trained_model/netD_"+args.dataset+".pth", 
+            map_location=lambda storage, 
+            loc: storage))
 
     criterion = nn.BCELoss()
 
@@ -311,7 +317,7 @@ def train(args, param, train_loader):
     if start_epoch == 0:
         netG.eval()
         fake = netG(fixed_noise)
-        vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, -1), nrow=2, normalize=True)
+        vutils.save_image(fake.data, '%s/%s/fake_samples_epoch_%03d.png' % ('result', args.dataset, -1), nrow=8, normalize=True)
         netG.train()
     for epoch in range(start_epoch, max_epoch):
         for i, (x, y) in enumerate(train_loader, 0):
