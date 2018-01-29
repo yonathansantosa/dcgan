@@ -80,7 +80,7 @@ def load_data(args):
     else:
         gpu_id=int(args.gpu)
     print(gpu_id)
-    torch.cuda.set_device(gpu_id)
+    # torch.cuda.set_device(gpu_id)
     
     # Loading dataset
     transform = transforms.Compose([
