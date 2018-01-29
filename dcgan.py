@@ -79,8 +79,9 @@ def load_data(args):
             gpu_id = 0
     else:
         gpu_id=int(args.gpu)
+    print(gpu_id)
     torch.cuda.set_device(gpu_id)
-
+    
     # Loading dataset
     transform = transforms.Compose([
             transforms.Resize(img_size),
