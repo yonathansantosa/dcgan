@@ -34,6 +34,8 @@ parser.add_argument('--gpu', default=0,
     help='which gpu would you use')
 parser.add_argument('--lr', default=0.01, 
     help='learning rate')
+parser.add_argument('--epoch', default=10, 
+    help='learning rate')
 parser.add_argument('--test', default=False, action='store_true', 
     help='load pretrained model and run test')
 args = parser.parse_args()
@@ -143,9 +145,9 @@ def train(args, train_loader):
     svm.cuda(gpu_id)
 
     optimizer = optim.SGD(svm.parameters(), learning_rate, 0.01, 0, 1e-10, True)
-    f = open('graph/graph_svm.txt', 'w')
+    f = open('graph/%s_graph_svm.txt'%args.epoch, 'w')
     f.write('epoch,iteration,loss\n')
-    max_epoch = 10
+    max_epoch = int(args.epoch)
     for epoch in range(max_epoch):
         for i, (x, y) in enumerate(train_loader):
             img_real = Variable(x).cuda(gpu_id)
@@ -163,7 +165,7 @@ def train(args, train_loader):
             
             print('[%d/%d] [%d/%d] %.4f' % (epoch, max_epoch, i, len(train_loader), loss))
             f.write(str(epoch)+','+str(i)+','+str(loss)+'\n')
-        torch.save(svm.state_dict(), '%s/svm.pth' % ('trained_model'))
+        torch.save(svm.state_dict(), '%s/%s_svm.pth' % ('trained_model',args.epoch))
 
     print("Training Complete")
     f.close()
