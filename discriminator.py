@@ -35,7 +35,7 @@ parser.add_argument('--gpu', default=0,
 parser.add_argument('--lr', default=0.01, 
     help='learning rate')
 parser.add_argument('--epoch', default=10, 
-    help='learning rate')
+    help='max epoch')
 parser.add_argument('--test', default=False, action='store_true', 
     help='load pretrained model and run test')
 args = parser.parse_args()
