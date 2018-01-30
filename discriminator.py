@@ -32,6 +32,8 @@ parser.add_argument('--gpu', default=0,
     help='which gpu would you use')
 parser.add_argument('--lr', default=0.01, 
     help='learning rate')
+parser.add_argument('--test', default=False, action='store_true', 
+    help='load pretrained model and run test')
 args = parser.parse_args()
 
 ''' 
@@ -163,7 +165,7 @@ def train(args, train_loader):
 
     print("Training Complete")
     f.close()
-    return svm
+    # return svm
 
 def test(args, svm, test_loader):
     '''
@@ -174,6 +176,7 @@ def test(args, svm, test_loader):
     netD.cuda(gpu_id)
     netD.eval()
 
+    svm.load_state_dict(torch.load("trained_model/svm.pth", map_location=lambda storage, loc: storage))
     svm.eval()
     total_loss = 0.0
     tgt = []
@@ -206,11 +209,14 @@ def test(args, svm, test_loader):
                         title='Normalized confusion matrix')
 
     plt.savefig("confussion_mat.png")
-    plt.show()
+    # plt.show()
 
 def main(args):
     train_loader, test_loader = load_data(args)
-    svm = train(args, train_loader)
+    
+    if not args.test:
+        train(args, train_loader)
+    
     test(args, svm, test_loader)
 
 main(args)
