@@ -21,9 +21,9 @@ def plot_confusion_matrix(cm, classes,
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=70)
-    plt.yticks(tick_marks, classes)
+    tick_marks = [0,20,40,60,80,100]
+    plt.xticks(tick_marks, tick_marks, rotation=70)
+    plt.yticks(tick_marks, tick_marks)
 
     # fmt = '.2f' if normalize else 'd'
     # thresh = cm.max() / 2.
