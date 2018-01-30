@@ -217,6 +217,6 @@ def main(args):
     if not args.test:
         train(args, train_loader)
     
-    test(args, svm, test_loader)
+    test(args, test_loader)
 
 main(args)
