@@ -145,7 +145,7 @@ def train(args, train_loader):
     svm.cuda(gpu_id)
 
     optimizer = optim.SGD(svm.parameters(), learning_rate, 0.01, 0, 1e-10, True)
-    f = open('graph/graph_'+args.dataset+'.txt', 'w')
+    f = open('graph/graph_svm.txt', 'w')
     f.write('epoch,iteration,loss\n')
     max_epoch = 10
     for epoch in range(max_epoch):
