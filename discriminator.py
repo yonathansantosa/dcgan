@@ -176,7 +176,7 @@ def test(args, test_loader):
     netD.cuda(gpu_id)
     netD.eval()
 
-    svm = SVMclassifier = SVMclassifier(28672, 101)
+    svm = SVMclassifier(28672, 101)
     svm.load_state_dict(torch.load("trained_model/svm.pth", map_location=lambda storage, loc: storage))
     svm.cuda(gpu_id)
     
