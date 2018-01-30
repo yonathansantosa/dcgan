@@ -123,8 +123,8 @@ def load_data(args):
 
     np.random.shuffle(indices)
 
-    train_idx = indices[:10]
-    test_idx = indices[10:20]
+    train_idx = indices[:split]
+    test_idx = indices[split:]
 
     train_sampler = torch.utils.data.sampler.SubsetRandomSampler(train_idx)
     test_sampler = torch.utils.data.sampler.SubsetRandomSampler(test_idx)
@@ -215,7 +215,7 @@ def test(args, test_loader):
     cnf.plot_confusion_matrix(cnf_matrix, classes=np.arange(101), normalize=False,
                         title='Normalized confusion matrix')
 
-    plt.savefig("confussion_mat.png")
+    plt.savefig('confussion_mat_%s.png' % (args.epoch))
     # plt.show()
 
 def main(args):
