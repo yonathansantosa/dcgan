@@ -144,10 +144,10 @@ def train(args, train_loader):
     svm = SVMclassifier(28672, 101)
     svm.cuda(gpu_id)
 
-    optimizer = optim.SGD(svm.parameters(), learning_rate, 0.01, 0, 1e-10, True)
-    f = open('graph/%s_graph_svm.txt'%args.epoch, 'w')
-    f.write('epoch,iteration,loss\n')
     max_epoch = int(args.epoch)
+    optimizer = optim.SGD(svm.parameters(), learning_rate, 0.01, 0, 1e-10, True)
+    f = open('graph/%i_graph_svm.txt'%(max_epoch), 'w')
+    f.write('epoch,iteration,loss\n')
     for epoch in range(max_epoch):
         for i, (x, y) in enumerate(train_loader):
             img_real = Variable(x).cuda(gpu_id)
