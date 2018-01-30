@@ -36,7 +36,7 @@ args = parser.parse_args()
 nz = 100
 ngf = 128
 ndf = 128
-nc = 3
+nc = 1 if args.dataset == 'mnist' else 3
 k_size = 4
 img_size = 64
 out_size = int(args.n)
@@ -49,7 +49,6 @@ def show_image(img, size, name=None):
     img_np = img.data.cpu().numpy()
     
     fig = plt.figure()
-
     for j in range(img_np.shape[0]):
         img_show = np.transpose(img_np[j], (1,2,0))
         # print(np.max(img_show), np.min(img_show))
@@ -58,6 +57,8 @@ def show_image(img, size, name=None):
         if nc == 1:
             img_show = img_show.reshape(img_np[0].shape[1], img_np[0].shape[2])
         sub = fig.add_subplot(size,size,j+1)
+        plt.axis('off')
+        
         sub.imshow(img_show, cmap='gray')
     
     if not name == None:
@@ -138,7 +139,7 @@ class G_layer(nn.Module):
 
 netG = G_layer()
 netG.cuda()
-netG.load_state_dict(torch.load("trained_model/netG_lsun.pth", map_location=lambda storage, loc: storage))
+netG.load_state_dict(torch.load('trained_model/netG_%s.pth' % args.dataset, map_location=lambda storage, loc: storage))
 netG.eval()
 
 if not args.arithmetic:
