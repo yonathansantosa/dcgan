@@ -2,7 +2,10 @@ import itertools
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+'''
+Implementation taken from
+http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
+'''
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,

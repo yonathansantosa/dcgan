@@ -57,8 +57,8 @@ batch_size = int(args.batch)
 learning_rate = float(args.lr)
 
 feature_size = 28672
-traindir = './food-101/images'
-# traindir = '/home/data/food-101/images'
+# traindir = './food-101/images'
+traindir = '/home/data/food-101/images'
 gpu_id = int(args.gpu)
 torch.cuda.set_device(gpu_id)
 
@@ -145,7 +145,8 @@ def train(args, train_loader):
     svm.cuda(gpu_id)
 
     optimizer = optim.SGD(svm.parameters(), learning_rate, 0.01, 0, 1e-10, True)
-
+    f = open('graph/graph_'+args.dataset+'.txt', 'w')
+    f.write('epoch,iteration,loss\n')
     max_epoch = 10
     for epoch in range(max_epoch):
         for i, (x, y) in enumerate(train_loader):
@@ -163,10 +164,11 @@ def train(args, train_loader):
             optimizer.zero_grad()
             
             print('[%d/%d] [%d/%d] %.4f' % (epoch, max_epoch, i, len(train_loader), loss))
+            f.write(str(epoch)+','+str(i)+','+str(loss)+'\n')
         torch.save(svm.state_dict(), '%s/svm.pth' % ('trained_model'))
 
     print("Training Complete")
-        
+    f.close()
     return svm
 
 def test(args, svm, test_loader):
