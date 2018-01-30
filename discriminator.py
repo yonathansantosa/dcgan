@@ -167,7 +167,7 @@ def train(args, train_loader):
     f.close()
     # return svm
 
-def test(args, svm, test_loader):
+def test(args, test_loader):
     '''
     Testing SVM
     '''
