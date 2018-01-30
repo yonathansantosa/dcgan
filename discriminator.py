@@ -16,14 +16,8 @@ import numpy as np
 import os
 import os.path
 from torch.autograd import Variable
-from thundersvm.python.svm import *
-import argparse
-from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.svm import SVC
-from sklearn.ensemble import BaggingClassifier
-from sklearn.multiclass import OneVsRestClassifier
-import pickle
+import argparse
 import confusionmat as cnf
 from sklearn.metrics import confusion_matrix
 # from itertools import chain
@@ -203,7 +197,7 @@ def test(args, svm, test_loader):
         tgt += target
         
     print("Total Loss = ", total_loss)
-    accuracy = np.sum(np.array(out) == np.array(tgt))/len(out)
+    accuracy = accuracy_score(tgt, out)
     print("Accuracy = ", accuracy)
     cnf_matrix = confusion_matrix(np.array(tgt), np.array(out))
     np.set_printoptions(precision=2)
