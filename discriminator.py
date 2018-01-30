@@ -121,8 +121,8 @@ def load_data(args):
 
     np.random.shuffle(indices)
 
-    train_idx = indices[:split]
-    test_idx = indices[split:]
+    train_idx = indices[:10]
+    test_idx = indices[10:20]
 
     train_sampler = torch.utils.data.sampler.SubsetRandomSampler(train_idx)
     test_sampler = torch.utils.data.sampler.SubsetRandomSampler(test_idx)
